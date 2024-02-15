@@ -84,7 +84,8 @@ db.serialize(() => {
       lastName TEXT,
       email TEXT,
       phone INT,
-      notes TEXT
+      notes TEXT,
+      status TEXT
     )`,
     (err) => {
       if (err) {
@@ -99,7 +100,7 @@ db.serialize(() => {
         }
         console.log("All rows deleted from clients");
 
-        //create appointmnets table if it doesn't exist
+        //create appointments table if it doesn't exist
         db.run(
           `CREATE TABLE IF NOT EXISTS Appointments (
         id INTEGER PRIMARY KEY,
@@ -109,6 +110,7 @@ db.serialize(() => {
         status TEXT,
         notes TEXT,
         duration INT,
+        price INT,
         FOREIGN KEY (clientId) REFERENCES Clients(id)
       )`,
           (err) => {

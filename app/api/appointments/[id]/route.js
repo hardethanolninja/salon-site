@@ -8,9 +8,11 @@ export async function GET(req, res) {
   const db = await getDb();
 
   //get selected item from services table
-  const appointment = await db.all(
-    "SELECT * FROM Appointments WHERE id = ?",
-    id
+  const appointment = await db.get(
+    `SELECT Appointments.*, Clients.firstName, Clients.lastName 
+    FROM Appointments 
+    INNER JOIN Clients ON Appointments.clientId = Clients.id 
+    WHERE Appointments.id = ${id}`
   );
 
   return new Response(JSON.stringify(appointment), {
@@ -55,6 +57,11 @@ export async function PATCH(req, res) {
   if (request.duration) {
     await db.run(
       `UPDATE Appointments SET duration = ${request.duration} WHERE id = ${id}`
+    );
+  }
+  if (request.price) {
+    await db.run(
+      `UPDATE Appointments SET price = ${request.price} WHERE id = ${id}`
     );
   }
 

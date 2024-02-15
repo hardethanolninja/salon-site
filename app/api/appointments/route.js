@@ -5,7 +5,10 @@ export async function GET(req, res) {
   const db = await getDb();
 
   //get all items from appointments table
-  const appointments = await db.all("SELECT * FROM Appointments");
+  const appointments = await db.all(
+    "SELECT Appointments.*, Clients.firstName, Clients.lastName FROM Appointments INNER JOIN Clients ON Appointments.clientId = Clients.id",
+    []
+  );
 
   return new Response(JSON.stringify(appointments), {
     headers: { "Content-Type": "application/json" },
@@ -18,12 +21,12 @@ export async function POST(req, res) {
   const db = await getDb();
 
   //YYYY-MM-DD HH:MI:SS
-  const { date_time, clientId, services, status, notes, duration } =
+  const { date_time, clientId, services, status, notes, duration, price } =
     await req.json();
 
   await db.run(
-    `INSERT INTO Appointments (date_time, clientId, services, status, notes, duration) VALUES (?, ?, ?, ?, ?, ?)`,
-    [date_time, clientId, services, status, notes, duration]
+    `INSERT INTO Appointments (date_time, clientId, services, status, notes, duration, price) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [date_time, clientId, services, status, notes, duration, price]
   );
 
   return new Response(

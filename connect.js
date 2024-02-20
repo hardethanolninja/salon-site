@@ -106,8 +106,7 @@ db.serialize(() => {
         id INTEGER PRIMARY KEY,
         date_time DATETIME,
         clientId INTEGER,
-        services TEXT,
-        status TEXT,
+        status TEXT DEFAULT "Booked",
         notes TEXT,
         duration INT,
         price INT,
@@ -127,6 +126,17 @@ db.serialize(() => {
               console.log("All rows deleted from appointments");
             });
           }
+        );
+
+        //create junction table for appointments and services
+        db.run(
+          `CREATE TABLE IF NOT EXISTS AppointmentServices (
+            appointmentId INTEGER,
+            serviceId INTEGER,
+            PRIMARY KEY (appointmentId, serviceId),
+            FOREIGN KEY (appointmentId) REFERENCES Appointments(id) ON DELETE CASCADE,
+            FOREIGN KEY (serviceId) REFERENCES Services(id) ON DELETE CASCADE
+          )`
         );
 
         db.close((err) => {

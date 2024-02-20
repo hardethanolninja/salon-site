@@ -1,6 +1,6 @@
 import React from "react";
 
-import { format } from "date-fns";
+import { format, compareAsc } from "date-fns";
 
 function TopDataRow({ onClick, data }) {
   const hours = Math.floor(data.duration / 60);
@@ -9,11 +9,11 @@ function TopDataRow({ onClick, data }) {
   const now = new Date();
   //for appointments
   if (data.status) {
-    if (now < data.date_time) {
+    if (compareAsc(data.date_time, now) >= 0) {
       return (
         <li
           onClick={onClick}
-          className='cursor-pointer my-1 p-3 bg-blue-100 hover:bg-blue-200 text-blue-700 transition duration-150 ease-in-out rounded-md'
+          className='p-3 my-1 text-blue-700 transition duration-150 ease-in-out bg-blue-100 rounded-md cursor-pointer hover:bg-blue-200'
         >
           <div className='flex'>
             <span className='w-1/4'>Client Name: {data.lastName}</span>
@@ -33,7 +33,7 @@ function TopDataRow({ onClick, data }) {
     return (
       <li
         onClick={onClick}
-        className='cursor-pointer my-1 p-3 bg-blue-100 hover:bg-blue-200 text-blue-700 transition duration-150 ease-in-out rounded-md'
+        className='p-3 my-1 text-blue-700 transition duration-150 ease-in-out bg-blue-100 rounded-md cursor-pointer hover:bg-blue-200'
       >
         <div className='flex'>
           <span className='w-1/4'>
@@ -51,7 +51,7 @@ function TopDataRow({ onClick, data }) {
     return (
       <li
         onClick={onClick}
-        className='cursor-pointer my-1 p-3 bg-blue-100 hover:bg-blue-200 text-blue-700 transition duration-150 ease-in-out rounded-md'
+        className='p-3 my-1 text-blue-700 transition duration-150 ease-in-out bg-blue-100 rounded-md cursor-pointer hover:bg-blue-200'
       >
         <div className='flex'>
           <span className='w-1/3'>{data.name}</span>

@@ -2,7 +2,16 @@
 
 import { useEffect, useState } from "react";
 
-import { format } from "date-fns";
+import { format, compareAsc } from "date-fns";
+
+import {
+  getAllAppointments,
+  getAllClients,
+  getAllServices,
+  getOneAppointment,
+  getOneClient,
+  getOneService,
+} from "../services/getters.js";
 
 import ModalForm from "../components/modalForm";
 import TopDataRow from "../components/TopDataRow";
@@ -16,54 +25,11 @@ function Admin({ data }) {
   const [appointmentFields, setAppointmentFields] = useState([]);
   const [clientFields, setClientFields] = useState([]);
 
-  function getAllAppointments() {
-    fetch("/api/appointments")
-      .then((res) => res.json())
-      .then((data) => {
-        setTopData(data);
-      })
-      .catch((err) => console.error(err));
-  }
+  useEffect(() => {
+    initialPageLoader();
+  }, []);
 
-  function getOneAppointment(id) {
-    fetch(`/api/appointments/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setBottomData(data);
-      })
-      .catch((err) => console.error(err));
-  }
-
-  function getAllClients() {
-    fetch("/api/clients")
-      .then((res) => res.json())
-      .then((data) => {
-        setTopData(data);
-      })
-      .catch((err) => console.error(err));
-  }
-
-  function getOneClient(id) {
-    fetch(`/api/clients/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setBottomData(data);
-      })
-      .catch((err) => console.error(err));
-  }
-
-  //get all services
-
-  function getOneService(id) {
-    fetch(`/api/services/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setBottomData(data);
-      })
-      .catch((err) => console.error(err));
-  }
-
-  function getAllServices() {
+  function initialPageLoader() {
     fetch("/api/clients")
       .then((res) => res.json())
       .then((clientData) => {
@@ -154,7 +120,6 @@ function Admin({ data }) {
             ];
 
             setAppointmentFields(fields);
-            setTopData(servicesData);
           })
           .catch((err) => console.error(err));
       })
@@ -236,7 +201,7 @@ function Admin({ data }) {
         <h3 className='mt-2 text-3xl font-bold text-blue-900'>Appointments</h3>
         <p
           className='px-4 py-2 my-2 text-center text-white bg-blue-500 rounded hover:bg-blue-700'
-          onClick={getAllAppointments}
+          onClick={() => getAllAppointments(setTopData)}
         >
           View Upcoming Appointments
         </p>
@@ -245,7 +210,7 @@ function Admin({ data }) {
           buttonTitle='Create Appointment'
           fields={appointmentFields}
           onSubmit={handleAppointmentSubmit}
-          onClick={getAllClients}
+          onClick={() => getAllClients(setTopData)}
         />
         <h3 className='mt-2 text-3xl font-bold text-blue-900'>Calendar</h3>
         <p className='px-4 py-2 my-2 text-center text-white bg-blue-500 rounded hover:bg-blue-700'>
@@ -254,7 +219,7 @@ function Admin({ data }) {
         <h3 className='mt-2 text-3xl font-bold text-blue-900'>Clients</h3>
         <p
           className='px-4 py-2 my-2 text-center text-white bg-blue-500 rounded hover:bg-blue-700'
-          onClick={getAllClients}
+          onClick={() => getAllClients(setTopData)}
         >
           View All Clients
         </p>
@@ -266,7 +231,7 @@ function Admin({ data }) {
         />
         <h3 className='mt-2 text-3xl font-bold text-blue-900'>Services</h3>
         <p
-          onClick={getAllServices}
+          onClick={() => getAllServices(setTopData)}
           className='px-4 py-2 my-2 text-center text-white bg-blue-500 rounded hover:bg-blue-700'
         >
           View All Services

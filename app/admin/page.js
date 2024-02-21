@@ -2,26 +2,15 @@
 
 import { useEffect, useState } from "react";
 
-import { format, compareAsc } from "date-fns";
-
-import {
-  getAllAppointments,
-  getAllClients,
-  getAllServices,
-  getOneAppointment,
-  getOneClient,
-  getOneService,
-} from "../services/getters.js";
+import { sortAppointments } from "../library/functions";
 
 import ModalForm from "../components/modalForm";
 import TopDataRow from "../components/TopDataRow";
 import MoreInfo from "../components/MoreInfo";
 
-function Admin({ data }) {
+function Admin() {
   const [topData, setTopData] = useState(null);
   const [bottomData, setBottomData] = useState(null);
-  const [clients, setClients] = useState(null);
-  const [services, setServices] = useState(null);
   const [appointmentFields, setAppointmentFields] = useState([]);
   const [clientFields, setClientFields] = useState([]);
 
@@ -29,13 +18,66 @@ function Admin({ data }) {
     initialPageLoader();
   }, []);
 
+  function getAllAppointments() {
+    fetch(`/api/appointments/`)
+      .then((res) => res.json())
+      .then((data) => {
+        sortAppointments(data);
+        setTopData(data);
+      })
+      .catch((err) => console.error(err.message));
+  }
+
+  function getOneAppointment(id) {
+    fetch(`/api/appointments/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setBottomData(data);
+      })
+      .catch((err) => console.error(err.message));
+  }
+
+  function getAllClients() {
+    fetch(`/api/clients`)
+      .then((res) => res.json())
+      .then((data) => {
+        setTopData(data);
+      })
+      .catch((err) => console.error(err.message));
+  }
+
+  function getOneClient(id) {
+    fetch(`/api/clients/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setBottomData(data);
+      })
+      .catch((err) => console.error(err.message));
+  }
+
+  function getAllServices() {
+    fetch(`/api/services/`)
+      .then((res) => res.json())
+      .then((data) => {
+        setTopData(data);
+      })
+      .catch((err) => console.error(err.message));
+  }
+
+  function getOneService(id) {
+    fetch(`/api/services/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setBottomData(data);
+      })
+      .catch((err) => console.error(err.message));
+  }
+
   function initialPageLoader() {
-    fetch("/api/clients")
+    fetch("/api/clients/")
       .then((res) => res.json())
       .then((clientData) => {
-        setClients(clientData);
-
-        const fields = [
+        const clFields = [
           {
             name: "firstName",
             type: "text",
@@ -68,14 +110,12 @@ function Admin({ data }) {
           },
         ];
 
-        setClientFields(fields);
+        setClientFields(clFields);
 
-        fetch("/api/services")
+        fetch("/api/services/")
           .then((res) => res.json())
           .then((servicesData) => {
-            setServices(servicesData);
-
-            const fields = [
+            const svFields = [
               {
                 name: "date_time",
                 type: "datetime-local",
@@ -117,9 +157,17 @@ function Admin({ data }) {
                 placeholder: "Appointment Price",
                 required: false,
               },
+              {
+                name: "duration",
+                min: "15",
+                max: "240",
+                step: "15",
+                value: "30",
+                type: "range",
+              },
             ];
 
-            setAppointmentFields(fields);
+            setAppointmentFields(svFields);
           })
           .catch((err) => console.error(err));
       })
@@ -160,7 +208,7 @@ function Admin({ data }) {
   ];
 
   const handleClientSubmit = (formData) => {
-    fetch("/api/clients", {
+    fetch("/api/clients/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -172,7 +220,7 @@ function Admin({ data }) {
   };
 
   const handleServiceSubmit = (formData) => {
-    fetch("/api/services", {
+    fetch("/api/services/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -184,7 +232,7 @@ function Admin({ data }) {
   };
 
   const handleAppointmentSubmit = (formData) => {
-    fetch("/api/appointments", {
+    fetch("/api/appointments/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -210,7 +258,6 @@ function Admin({ data }) {
           buttonTitle='Create Appointment'
           fields={appointmentFields}
           onSubmit={handleAppointmentSubmit}
-          onClick={() => getAllClients(setTopData)}
         />
         <h3 className='mt-2 text-3xl font-bold text-blue-900'>Calendar</h3>
         <p className='px-4 py-2 my-2 text-center text-white bg-blue-500 rounded hover:bg-blue-700'>

@@ -5,8 +5,8 @@ import logo from "../../public/skyescreationslogo.webp";
 
 function Header() {
   return (
-    <header className='bg-white text-black p-2'>
-      <div className='container mx-auto flex justify-between items-center'>
+    <header className='p-2 text-black bg-white'>
+      <div className='container flex items-center justify-between mx-auto'>
         <Link href='/'>
           <Image
             src={logo}
@@ -39,7 +39,7 @@ function Header() {
             </li>
           </ul>
         </nav>
-        <div className='hover:text-blue-200 cursor-pointer'>Login</div>
+        <div className='cursor-pointer hover:text-blue-200'>Login</div>
       </div>
     </header>
   );

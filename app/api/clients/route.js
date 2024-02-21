@@ -1,16 +1,24 @@
 import { getDb } from "@/backend/db";
 
-//GET
+import { NextRequest, NextResponse } from "next/server";
+
+GET;
 export async function GET(req, res) {
-  const db = await getDb();
+  try {
+    const db = await getDb();
+    //get all items from clients table
+    const clients = await db.all("SELECT * FROM Clients");
 
-  //get all items from services table
-  const clients = await db.all("SELECT * FROM Clients");
-
-  return new Response(JSON.stringify(clients), {
-    headers: { "content-type": "application/json" },
-    status: 200,
-  });
+    return new Response(JSON.stringify(clients), {
+      headers: { "Content-Type": "application/json" },
+      status: 200,
+    });
+  } catch (err) {
+    return new Response(null, {
+      status: 500,
+      message: `${err.message}`,
+    });
+  }
 }
 
 //POST

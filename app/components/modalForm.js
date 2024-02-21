@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 
-function ModalForm({ title, buttonTitle, fields, multiple, onSubmit }) {
+function ModalForm({ title, buttonTitle, fields, onSubmit }) {
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({});
+  const [totalMinutes, setTotalMinutes] = useState(30);
 
   const handleChange = (e) => {
     const { name, value, options } = e.target;
@@ -29,17 +30,17 @@ function ModalForm({ title, buttonTitle, fields, multiple, onSubmit }) {
   return (
     <>
       <button
-        className='w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700'
+        className='w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-700'
         onClick={() => setIsOpen(true)}
       >
         {buttonTitle}
       </button>
 
       {isOpen && (
-        <div className='fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center'>
-          <div className='relative mx-auto p-5 border w-96 shadow-lg rounded-md bg-white'>
+        <div className='fixed inset-0 flex items-center justify-center w-full h-full overflow-y-auto bg-black bg-opacity-50'>
+          <div className='relative p-5 mx-auto bg-white border rounded-md shadow-lg w-96'>
             <div className='text-center'>
-              <h3 className='text-lg leading-6 font-medium text-gray-900'>
+              <h3 className='text-lg font-medium leading-6 text-gray-900'>
                 {title}
               </h3>
               <form onSubmit={handleSubmit} className='mt-2 space-y-4'>
@@ -51,7 +52,7 @@ function ModalForm({ title, buttonTitle, fields, multiple, onSubmit }) {
                           {field.placeholder}
                         </label>
                         <select
-                          className='w-full px-3 py-2 border shadow-sm border-slate-300 rounded-md focus:outline-none focus:border-blue-500'
+                          className='w-full px-3 py-2 border rounded-md shadow-sm border-slate-300 focus:outline-none focus:border-blue-500'
                           name={field.name}
                           required={field.required}
                           key={field.name}
@@ -66,6 +67,35 @@ function ModalForm({ title, buttonTitle, fields, multiple, onSubmit }) {
                         </select>
                       </div>
                     );
+                  } else if (field.type === "range") {
+                    const handleChange = (e) => {
+                      setTotalMinutes(parseInt(e.target.value));
+                    };
+
+                    const hours = Math.floor(totalMinutes / 60);
+                    const minutes = totalMinutes % 60;
+
+                    return (
+                      <div className='slider-container' key={field.name}>
+                        <label className='slider-label'>
+                          Duration of Appointment:
+                        </label>
+                        <br />
+                        <input
+                          type='range'
+                          min={field.min}
+                          max={field.max}
+                          step={field.step}
+                          name={field.name}
+                          value={totalMinutes}
+                          onChange={handleChange}
+                          className='slider'
+                        />
+                        <span className='slider-value'>{hours}</span> Hours
+                        {"  "}
+                        <span className='slider-value'>{minutes}</span> Minutes
+                      </div>
+                    );
                   } else {
                     return (
                       <input
@@ -74,23 +104,23 @@ function ModalForm({ title, buttonTitle, fields, multiple, onSubmit }) {
                         name={field.name}
                         value={formData[field.name] || ""}
                         onChange={handleChange}
-                        className='w-full px-3 py-2 border shadow-sm border-slate-300 rounded-md focus:outline-none focus:border-blue-500'
+                        className='w-full px-3 py-2 border rounded-md shadow-sm border-slate-300 focus:outline-none focus:border-blue-500'
                         placeholder={field.placeholder}
                         required={field.required}
                       />
                     );
                   }
                 })}
-                <div className='flex justify-center items-center space-x-4'>
+                <div className='flex items-center justify-center space-x-4'>
                   <button
                     type='submit'
-                    className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700'
+                    className='px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-700'
                   >
                     Submit
                   </button>
                   <button
                     type='button'
-                    className='px-4 py-2 bg-white text-blue-700 border border-blue-500 rounded hover:bg-gray-100'
+                    className='px-4 py-2 text-blue-700 bg-white border border-blue-500 rounded hover:bg-gray-100'
                     onClick={() => setIsOpen(false)}
                   >
                     Close

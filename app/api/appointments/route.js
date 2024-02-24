@@ -35,7 +35,7 @@ export async function GET(req, res) {
   } catch (err) {
     return new Response(null, {
       status: 500,
-      message: `${err}`,
+      message: `${err.message}`,
     });
   }
 }

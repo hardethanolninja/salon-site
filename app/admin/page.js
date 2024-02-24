@@ -37,6 +37,26 @@ function Admin() {
       .catch((err) => console.error(err.message));
   }
 
+  function editAppointment(id) {}
+
+  function deleteAppointment(id) {
+    fetch(`/api/appointments/${id}`, {
+      method: "DELETE", // Specify the HTTP method for deletion
+    })
+      .then((res) => {
+        if (!res.ok) {
+          // Handle response not OK, which means deletion didn't succeed
+          throw new Error("Failed to delete the appointment.");
+        }
+        return res.json(); // Assuming your API responds with JSON even on DELETE
+      })
+      .then((data) => {
+        setBottomData(null); // Assuming you want to clear some state upon successful deletion
+        // Optionally, refresh the list of appointments or show a success message
+      })
+      .catch((err) => console.error(err.message));
+  }
+
   function getAllClients() {
     fetch(`/api/clients`)
       .then((res) => res.json())
@@ -55,6 +75,10 @@ function Admin() {
       .catch((err) => console.error(err.message));
   }
 
+  function editClient(id) {}
+
+  function deleteClient(id) {}
+
   function getAllServices() {
     fetch(`/api/services/`)
       .then((res) => res.json())
@@ -72,6 +96,10 @@ function Admin() {
       })
       .catch((err) => console.error(err.message));
   }
+
+  function editService(id) {}
+
+  function deleteService(id) {}
 
   function initialPageLoader() {
     fetch("/api/clients/")
@@ -144,6 +172,7 @@ function Admin() {
                   value: service.id,
                   label: service.name,
                 })),
+                defaultValue: [""],
               },
               {
                 name: "notes",
@@ -166,6 +195,12 @@ function Admin() {
                 type: "range",
               },
             ];
+
+            //keep first client from being default
+            svFields[1].options.unshift({
+              value: 0,
+              label: "Please Select Client",
+            });
 
             setAppointmentFields(svFields);
           })
@@ -243,6 +278,24 @@ function Admin() {
       .catch((error) => console.error(error));
   };
 
+  function handleDelete(type, id) {
+    fetch(`/api/${type}/${id}`, {
+      method: "DELETE", // Specify the HTTP method for deletion
+    })
+      .then((res) => {
+        if (!res.ok) {
+          // Handle response not OK, which means deletion didn't succeed
+          throw new Error(`Failed to delete the ${type}.`);
+        }
+        return res.json(); // Assuming your API responds with JSON even on DELETE
+      })
+      .then((data) => {
+        setBottomData(null);
+        initialPageLoader();
+      })
+      .catch((err) => console.error(err.message));
+  }
+
   return (
     <div className='flex flex-col h-screen overflow-hidden md:flex-row'>
       <aside className='w-full p-4 overflow-auto bg-blue-50 md:w-1/4 xl:w-1/4'>
@@ -314,7 +367,9 @@ function Admin() {
           )}
         </section>
         <section className='flex-grow p-4 overflow-auto bg-blue-100'>
-          {bottomData !== null && <MoreInfo data={bottomData[0]} />}
+          {bottomData !== null && (
+            <MoreInfo data={bottomData[0]} handleDelete={handleDelete} />
+          )}
         </section>
       </div>
     </div>

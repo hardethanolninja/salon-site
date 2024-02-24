@@ -2,14 +2,14 @@ import React from "react";
 
 import { format } from "date-fns";
 
-function MoreInfo({ data }) {
+function MoreInfo({ data, handleEdit, handleDelete }) {
   const hours = Math.floor(data.duration / 60);
   const minutes = data.duration % 60;
 
   const trashCan = (
     <svg
       xmlns='http://www.w3.org/2000/svg'
-      className='h-4 w-4'
+      className='w-4 h-4'
       fill='none'
       viewBox='0 0 24 24'
       stroke='currentColor'
@@ -26,7 +26,7 @@ function MoreInfo({ data }) {
   const editIcon = (
     <svg
       xmlns='http://www.w3.org/2000/svg'
-      className='h-4 w-4'
+      className='w-4 h-4'
       fill='none'
       viewBox='0 0 24 24'
       stroke='currentColor'
@@ -42,30 +42,32 @@ function MoreInfo({ data }) {
 
   if (data.status) {
     return (
-      <div className='bg-blue-50 p-4 rounded-lg shadow-md'>
+      <div className='p-4 rounded-lg shadow-md bg-blue-50'>
         <div className='flex flex-row justify-between'>
-          <h3 className='text-blue-800 font-semibold text-lg mb-2'>
+          <h3 className='mb-2 text-lg font-semibold text-blue-800'>
             {data.firstName} {data.lastName}&apos;s Appointment Details
           </h3>
           <div>
             <button
               type='button'
-              className=' mx-1 p-2 bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-opacity-75'
+              className='p-2 mx-1 font-semibold text-white bg-blue-500 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-opacity-75'
               title='Edit'
+              onClick={() => handleEdit(data.id)}
             >
               {editIcon}
             </button>
             <button
               type='button'
-              className='mx-1 p-2 bg-red-500 hover:bg-red-700 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-opacity-75'
+              className='p-2 mx-1 font-semibold text-white bg-red-500 rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-opacity-75'
               title='Delete'
+              onClick={() => handleDelete("appointments", data.id)}
             >
               {trashCan}
             </button>
           </div>
         </div>
         <div className='flex flex-row p-2'>
-          <div className='bg-blue-100 p-3 rounded-md'>
+          <div className='w-1/2 p-3 bg-blue-100 rounded-md'>
             <p className='text-blue-700'>
               Date: {format(new Date(data.date_time), "dd MMMM yy")}
             </p>
@@ -76,20 +78,22 @@ function MoreInfo({ data }) {
               Duration: {hours} hours {minutes} minutes
             </p>
             <p className='text-blue-700'>Status: {data.status}</p>
-            <p className='text-blue-700 font-bold'>Estimate: ${data.price}</p>
+            <p className='font-bold text-blue-700'>Estimate: ${data.price}</p>
           </div>
-          <div className='px-2 flex flex-grow'>
-            <div className='bg-blue-100 p-2 rounded-md'>
-              <h4 className='text-blue-700 font-bold'>Services:</h4>
-              {data.services.map((service, index) => (
-                <p key={index} className='text-blue-600'>
-                  {service.name}
-                </p>
-              ))}
+          <div className='flex flex-grow px-2'>
+            <div className='w-2/5 p-2 bg-blue-100 rounded-md'>
+              <h4 className='font-bold text-blue-700'>Services:</h4>
+              <ul className='w-1 ml-4 list-decimal'>
+                {data.services.map((service, index) => (
+                  <li key={index} className='text-blue-600 text-wrap'>
+                    {service.name}
+                  </li>
+                ))}
+              </ul>
             </div>
-            <div className='bg-blue-100 mx-2 px-2 rounded-md flex flex-col flex-grow'>
-              <h4 className='mt-2 text-blue-700 font-bold'>Notes:</h4>
-              <p className=' text-blue-600'>{data.notes}</p>
+            <div className='flex flex-col flex-grow px-2 mx-2 bg-blue-100 rounded-md'>
+              <h4 className='mt-2 font-bold text-blue-700'>Notes:</h4>
+              <p className='text-blue-600 '>{data.notes}</p>
             </div>
           </div>
         </div>
@@ -99,22 +103,22 @@ function MoreInfo({ data }) {
 
   if (data.phone) {
     return (
-      <div className='bg-blue-50 p-4 rounded-lg shadow-md'>
+      <div className='p-4 rounded-lg shadow-md bg-blue-50'>
         <div className='flex flex-row justify-between'>
-          <h3 className='text-blue-800 font-semibold text-lg mb-2'>
+          <h3 className='mb-2 text-lg font-semibold text-blue-800'>
             {data.firstName} {data.lastName}
           </h3>
           <div>
             <button
               type='button'
-              className=' mx-1 p-2 bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-opacity-75'
+              className='p-2 mx-1 font-semibold text-white bg-blue-500 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-opacity-75'
               title='Edit'
             >
               {editIcon}
             </button>
             <button
               type='button'
-              className='mx-1 p-2 bg-red-500 hover:bg-red-700 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-opacity-75'
+              className='p-2 mx-1 font-semibold text-white bg-red-500 rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-opacity-75'
               title='Delete'
             >
               {trashCan}
@@ -122,7 +126,7 @@ function MoreInfo({ data }) {
           </div>
         </div>
         <div className='flex flex-row p-2'>
-          <div className='bg-blue-100 p-3 rounded-md w-1/3'>
+          <div className='w-1/3 p-3 bg-blue-100 rounded-md'>
             <p className='text-blue-700'></p>
             <p className='text-blue-700'></p>
             <p className='text-blue-700'>Phone: {data.phone}</p>
@@ -131,10 +135,10 @@ function MoreInfo({ data }) {
               Status: {data.status ? data.status : "Client"}
             </p>
           </div>
-          <div className='px-2 flex flex-grow w-2/3'>
-            <div className='bg-blue-100 mx-2 px-2 rounded-md flex flex-col flex-grow'>
-              <h4 className='mt-2 text-blue-700 font-bold'>Notes:</h4>
-              <p className=' text-blue-600'>{data.notes}</p>
+          <div className='flex flex-grow w-2/3 px-2'>
+            <div className='flex flex-col flex-grow px-2 mx-2 bg-blue-100 rounded-md'>
+              <h4 className='mt-2 font-bold text-blue-700'>Notes:</h4>
+              <p className='text-blue-600 '>{data.notes}</p>
             </div>
           </div>
         </div>
@@ -144,22 +148,22 @@ function MoreInfo({ data }) {
 
   if (data.name) {
     return (
-      <div className='bg-blue-50 p-4 rounded-lg shadow-md'>
+      <div className='p-4 rounded-lg shadow-md bg-blue-50'>
         <div className='flex flex-row justify-between'>
-          <h3 className='text-blue-800 font-semibold text-lg mb-2'>
+          <h3 className='mb-2 text-lg font-semibold text-blue-800'>
             {data.name}
           </h3>
           <div>
             <button
               type='button'
-              className=' mx-1 p-2 bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-opacity-75'
+              className='p-2 mx-1 font-semibold text-white bg-blue-500 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-opacity-75'
               title='Edit'
             >
               {editIcon}
             </button>
             <button
               type='button'
-              className='mx-1 p-2 bg-red-500 hover:bg-red-700 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-opacity-75'
+              className='p-2 mx-1 font-semibold text-white bg-red-500 rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-opacity-75'
               title='Delete'
             >
               {trashCan}
@@ -167,18 +171,18 @@ function MoreInfo({ data }) {
           </div>
         </div>
         <div className='flex flex-row p-2'>
-          <div className='bg-blue-100 p-3 rounded-md w-1/3'>
+          <div className='w-1/3 p-3 bg-blue-100 rounded-md'>
             <p className='text-blue-700'></p>
             <p className='text-blue-700'></p>
             <p className='text-blue-700'>
               Duration: {Math.floor(data.time / 60)}:{data.time % 60}
             </p>
-            <p className='text-blue-700 font-bold'>Price: ${data.price}</p>
+            <p className='font-bold text-blue-700'>Price: ${data.price}</p>
           </div>
-          <div className='px-2 flex flex-grow w-2/3'>
-            <div className='bg-blue-100 mx-2 px-2 rounded-md flex flex-col flex-grow'>
-              <h4 className='mt-2 text-blue-700 font-bold'>Description:</h4>
-              <p className=' text-blue-600'>{data.description}</p>
+          <div className='flex flex-grow w-2/3 px-2'>
+            <div className='flex flex-col flex-grow px-2 mx-2 bg-blue-100 rounded-md'>
+              <h4 className='mt-2 font-bold text-blue-700'>Description:</h4>
+              <p className='text-blue-600 '>{data.description}</p>
             </div>
           </div>
         </div>

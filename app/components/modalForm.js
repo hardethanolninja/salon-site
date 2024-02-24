@@ -22,7 +22,9 @@ function ModalForm({ title, buttonTitle, fields, onSubmit }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    onSubmit(formData);
+    const formDataWithDuration = { ...formData, duration: totalMinutes };
+    console.log(formDataWithDuration);
+    onSubmit(formDataWithDuration);
     setIsOpen(false); // Close modal after submission
     setFormData({});
   };
@@ -56,6 +58,7 @@ function ModalForm({ title, buttonTitle, fields, onSubmit }) {
                           name={field.name}
                           required={field.required}
                           key={field.name}
+                          defaultValue={field.defaultValue}
                           onChange={handleChange} // Attach the onChange handler here
                           multiple={field.multiple} // Use field.multiple to control the attribute
                         >

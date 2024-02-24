@@ -85,7 +85,7 @@ db.serialize(() => {
       email TEXT,
       phone INT,
       notes TEXT,
-      status TEXT
+      status TEXT DEFAULT "Client"
     )`,
     (err) => {
       if (err) {
@@ -138,6 +138,14 @@ db.serialize(() => {
             FOREIGN KEY (serviceId) REFERENCES Services(id) ON DELETE CASCADE
           )`
         );
+
+        //clear out that table
+        db.run(`DELETE FROM AppointmentServices`, (err) => {
+          if (err) {
+            return console.error(err.message);
+          }
+          console.log("All rows deleted from appointment services");
+        });
 
         db.close((err) => {
           if (err) {

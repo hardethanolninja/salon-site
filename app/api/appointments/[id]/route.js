@@ -119,7 +119,9 @@ export async function DELETE(req, res) {
   const id = req.url.split("/").pop();
 
   try {
-    db.run(`DELETE from Appointments WHERE id = ${id}`);
+    await db.run(`DELETE from Appointments WHERE id = ${id}`);
+
+    await db.run(`DELETE FROM AppointmentServices WHERE id = ${id}`);
 
     return new Response(
       JSON.stringify(
